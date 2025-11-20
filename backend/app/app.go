@@ -1,7 +1,36 @@
 package app
 
-import "database/sql"
+import (
+	"database/sql"
+	"structured-notes/repositories"
+	"structured-notes/services"
+	"structured-notes/utils"
+)
+
+type Config struct {
+	Port     int
+	Database struct {
+		Host   string
+		Port   int
+		Name   string
+		Driver string
+	}
+	Media struct {
+		MaxSize              float64
+		MaxUploadsSize       float64
+		SupportedTypesImages []string
+		SupportedTypes       []string
+	}
+	Auth struct {
+		AccessTokenExpiry  int
+		RefreshTokenExpiry int
+	}
+}
 
 type App struct {
-	DB *sql.DB
+	DB        *sql.DB
+	Snowflake *utils.Snowflake
+	Config    Config
+	Services  *services.ServiceManager
+	Repos     *repositories.RepositoryManager
 }
