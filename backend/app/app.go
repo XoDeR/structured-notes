@@ -5,6 +5,8 @@ import (
 	"structured-notes/repositories"
 	"structured-notes/services"
 	"structured-notes/utils"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Config struct {
@@ -37,6 +39,9 @@ type App struct {
 
 func InitApp(config Config) *App {
 	var app App
+	app.DB = DBConnection(config, false)
+	app.Snowflake = utils.NewSnowflake(1763662880000)
+	app.Config = config
 
 	return &app
 }
