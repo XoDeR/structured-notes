@@ -1,0 +1,21 @@
+[Database]
+Driver = "mysql"
+Host = "localhost"
+Name = "structured-notes"
+Port = 3306
+
+[Media]
+MaxSize = 2e+7 # 20MB
+MaxUploadsSize = 1e+9 # 1GB
+SupportedTypesImages = [
+	"image/png",
+]
+SupportedTypes = [
+	# image formats
+	"image/png",
+]
+
+[Auth]
+AccessTokenExpiry = 1800 # 30 minutes
+RefreshTokenExpiry = 604800 # 7 days
+

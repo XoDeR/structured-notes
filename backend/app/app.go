@@ -34,3 +34,9 @@ type App struct {
 	Services  *services.ServiceManager
 	Repos     *repositories.RepositoryManager
 }
+
+func InitApp(config Config) *App {
+	var app App
+
+	return &app
+}
