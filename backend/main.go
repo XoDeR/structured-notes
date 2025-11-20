@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"structured-notes/logger"
+	"structured-notes/server"
 
 	"github.com/joho/godotenv"
 )
@@ -23,9 +23,10 @@ func main() {
 		logger.Error("BACKEND_PORT environment variable not set")
 		os.Exit(1)
 	}
+	appRouter, application := server.SetupServer()
 
-	testEnvVar := os.Getenv("TEST")
-	fmt.Println("TEST:", testEnvVar)
+	logger.Info("Starting server on port: " + port)
+	defer application.DB.Close()
 
-	fmt.Println("Structured Notes backend is running...")
+	appRouter.Run(":" + port)
 }
