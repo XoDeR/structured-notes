@@ -43,3 +43,14 @@ func (rm *RepositoryManager) PrepareStatement(key string, query string) (*sql.St
 	rm.statements[key] = stmt
 	return stmt, nil
 }
+
+func (rm *RepositoryManager) GetStatement(key string) (*sql.Stmt, error) {
+	rm.stmtMutex.RLock()
+	defer rm.stmtMutex.RUnlock()
+
+	stmt, exists := rm.statements[key]
+	if !exists {
+		return nil, fmt.Errorf("Prepared statement '%s' not found", key)
+	}
+	return stmt, nil
+}
