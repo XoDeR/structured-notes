@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS `permissions`;
+DROP TABLE IF EXISTS `connections_logs`;
+DROP TABLE IF EXISTS `sessions`;
+DROP TABLE IF EXISTS `nodes`;
+DROP TABLE IF EXISTS `users`;
