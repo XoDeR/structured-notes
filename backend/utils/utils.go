@@ -16,3 +16,10 @@ func IfNotNilValue[T any](newValue *T, defaultValue T) T {
 	}
 	return defaultValue
 }
+
+func StringValue(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
