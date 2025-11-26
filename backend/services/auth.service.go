@@ -138,7 +138,7 @@ func (s *authService) RequestPasswordReset(username string) (string, error) {
 		return "", nil // don't return any error
 	}
 
-	resetLink := fmt.Sprintf("%s", os.Getenv("DOMAIN_CLIENT")+"/login/reset?token="+resetToken)
+	resetLink := os.Getenv("DOMAIN_CLIENT") + "/login/reset?token=" + resetToken
 
 	return resetLink, nil // don't return any error
 }
