@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"log"
 	"structured-notes/repositories"
 	"structured-notes/services"
 	"structured-notes/utils"
@@ -42,6 +43,22 @@ func InitApp(config Config) *App {
 	app.DB = DBConnection(config, false)
 	app.Snowflake = utils.NewSnowflake(1763662880000)
 	app.Config = config
+
+	// migrations, schema creation
+	// temp disabled
+	//Migrate(&config)
+
+	repoManager, err := repositories.NewRepositoryManager(app.DB)
+	if err != nil {
+		log.Fatalf("Failed to initialize repository manager: %v", err)
+	}
+	app.Repos = repoManager
+
+	serviceManager, err := services.NewServiceManager(repoManager, app.Snowflake)
+	if err != nil {
+		log.Fatalf("Failed to initialize service manager: %v", err)
+	}
+	app.Services = serviceManager
 
 	return &app
 }
