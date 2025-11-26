@@ -136,6 +136,9 @@ func (s *nodeService) UpdateNode(nodeId types.Snowflake, node *models.Node, conn
 	}
 
 	allowed, level, err := authorizer.CanAccessNode(connectedUserId, connectedUserRole, dbNode, permissions.ActionUpdate)
+	if err != nil {
+		return nil, err
+	}
 	if !allowed && (dbNode.Access < 2 || *dbNode.Accessibility != 3) {
 		return nil, errors.New("unauthorized")
 	}
