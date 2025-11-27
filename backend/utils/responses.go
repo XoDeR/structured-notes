@@ -27,6 +27,9 @@ func Error(message string) gin.H {
 	}
 }
 
+// Note: response formatter wrapper works actually like a middleware
+// This function could be actually remade to a middleware
+// TODO: To test this approach later
 func ResponseFormatter(f func(c *gin.Context) (int, any)) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		code, body := f(c)
