@@ -45,8 +45,7 @@ func InitApp(config Config) *App {
 	app.Config = config
 
 	// migrations, schema creation
-	// temp disabled
-	//Migrate(&config)
+	Migrate(&config)
 
 	repoManager, err := repositories.NewRepositoryManager(app.DB)
 	if err != nil {

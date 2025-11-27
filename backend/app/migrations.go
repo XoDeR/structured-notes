@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"structured-notes/logger"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/mysql"
@@ -40,6 +41,11 @@ func Migrate(config *Config) {
 	defer m.Close()
 
 	if err := m.Up(); err != nil && err.Error() != "no change" {
-		panic(fmt.Sprintf("Failed to apply migrations: %v", err))
+		if os.Getenv("ENV") == "dev" {
+			logger.Warn(fmt.Sprintf("Migration warning: %v", err))
+		} else {
+			logger.Error(fmt.Sprintf("Migration failed: %v", err))
+			os.Exit(1)
+		}
 	}
 }
