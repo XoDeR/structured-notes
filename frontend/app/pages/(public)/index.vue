@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+//// Test
+const { API } = useApi();
+console.log("API", API);
+////
 </script>
 
 <template>
