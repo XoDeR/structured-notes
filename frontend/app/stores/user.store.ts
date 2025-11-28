@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { User, PublicUser, ConnectionLog } from './interfaces';
+import { makeRequest } from '~/helpers/apiClient';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -19,7 +20,11 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     async login(username: string, password: string) { },
-    async register(user: Omit<User, 'id' | 'created_timestamp' | 'updated_timestamp'>): Promise<boolean> { return false; },
+    async register(user: Omit<User, 'id' | 'created_timestamp' | 'updated_timestamp'>): Promise<boolean> {
+      const request = await makeRequest('users', 'POST', user);
+      if (request.status === 'success') return true;
+      throw request.message;
+    },
     async postLogout() {
       this.user = undefined;
       useUserStore().clear();
