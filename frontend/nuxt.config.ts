@@ -7,5 +7,20 @@ export default defineNuxtConfig({
       baseApi: '',
     },
   },
-  modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxtjs/color-mode']
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: "@use '~/styles/_variables.scss' as *;",
+        },
+      },
+    },
+  },
+  css: ['~/styles/main.scss'],
+  modules: [
+    '@nuxt/eslint',
+    '@pinia/nuxt',
+    '@nuxtjs/color-mode',
+    '@nuxt/icon'
+  ]
 })
