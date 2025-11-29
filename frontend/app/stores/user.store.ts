@@ -19,11 +19,34 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    async login(username: string, password: string) { },
-    async register(user: Omit<User, 'id' | 'created_timestamp' | 'updated_timestamp'>): Promise<boolean> {
-      const request = await makeRequest('users', 'POST', user);
-      if (request.status === 'success') return true;
-      throw request.message;
+    async login(username: string, password: string): Promise<{ success: boolean; errorMessage?: string }> {
+      try {
+        const response = await makeRequest<{ auth: boolean }>('auth', 'POST', { username, password });
+        if (response.status == 'success') {
+          if (import.meta.client) {
+            localStorage.setItem('isLoggedIn', 'true');
+          }
+          return { success: true };
+        }
+        return { success: false, errorMessage: response.message };
+      } catch (error) {
+        if (error instanceof Error) {
+          return { success: false, errorMessage: error.message };
+        }
+        return { success: false, errorMessage: String(error) };
+      }
+    },
+    async register(user: Omit<User, 'id' | 'created_timestamp' | 'updated_timestamp'>): Promise<{ success: boolean; errorMessage?: string }> {
+      try {
+        const response = await makeRequest('users', 'POST', user);
+        if (response.status === 'success') return { success: true };
+        return { success: false, errorMessage: response.message };
+      } catch (error) {
+        if (error instanceof Error) {
+          return { success: false, errorMessage: error.message };
+        }
+        return { success: false, errorMessage: String(error) };
+      }
     },
     async postLogout() {
       this.user = undefined;

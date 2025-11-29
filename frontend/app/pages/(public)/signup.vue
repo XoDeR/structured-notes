@@ -1,5 +1,8 @@
 <script setup lang="ts">
 
+const userStore = useUserStore();
+const router = useRouter();
+
 // form fields
 const username = ref('');
 const email = ref('');
@@ -14,9 +17,6 @@ const errors = ref({
   confirmPassword: '',
   general: '',
 });
-
-const userStore = useUserStore();
-const router = useRouter();
 
 // password related
 const showPassword = ref(false);
@@ -76,14 +76,12 @@ function register() {
 }
 
 async function createAccount(username: string, email: string, password: string) {
-  userStore
-    .register({ username, email, password, role: 1 })
-    .then(() => {
-      router.push('/login');
-    })
-    .catch(error => {
-      errors.value.general = error;
-    });
+  const result = await userStore.register({ username, email, password, role: 1 });
+  if (result.success) {
+    router.push('/login');
+  } else {
+    errors.value.general = result.errorMessage!;
+  }
 }
 
 </script>
