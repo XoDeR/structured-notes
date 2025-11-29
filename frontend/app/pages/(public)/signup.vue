@@ -67,11 +67,11 @@ function validate(): boolean {
   return valid;
 }
 
-function register() {
+async function register() {
   // client side validation
   if (validate()) {
     // register
-    createAccount(username.value, email.value, password.value)
+    await createAccount(username.value, email.value, password.value)
   }
 }
 

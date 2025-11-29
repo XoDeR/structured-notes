@@ -43,9 +43,9 @@ function validate(): boolean {
   return valid;
 }
 
-function login() {
+async function login() {
   if (validate()) {
-    connect(username.value, password.value);
+    await connect(username.value, password.value);
   }
 }
 
@@ -61,6 +61,10 @@ async function connect(username: string, password: string) {
 </script>
 
 <template>
+  <div class="container">
+    <div class="body-container">
+    </div>
+  </div>
   Login
   <NuxtLink to="/signup" class="signup-link">Need an account? Sign up</NuxtLink>
 </template>
