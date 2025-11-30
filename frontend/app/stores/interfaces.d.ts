@@ -29,3 +29,47 @@ export interface ConnectionLog {
   type: string;
   timestamp: number;
 }
+
+export interface DbNode {
+  id: string;
+  user_id: string;
+  parent_id?: string;
+  name: string;
+  description?: string;
+  tags?: string;
+  role: -1 | 1 | 2 | 3 | 4; // 1: Workspace; 2: Category; 3: Document; 4: Media; -1: Internal (frontend use only)
+  color?: number; // -1: Default; 0: None; 1-7: App colors
+  icon?: string;
+  thumbnail?: string;
+  theme?: string;
+  accessibility: number; // 1: Visible; 2: Draft; 3: Archived;
+  access: number; // 1: Viewer; 2: Editor;
+  display?: number; // 1: List; 2: Grid;
+  order?: number; // -1: Pinned; -2: Bookmark
+  content?: string;
+  content_compiled?: string;
+  size?: number; // in bytes
+  metadata?: {
+    filetype?: string;
+    original_path?: string;
+    transformed_path?: string;
+  };
+  created_timestamp: number;
+  updated_timestamp: number;
+
+  permissions?: Permission[];
+}
+
+export interface Permission {
+  id: string;
+  user_id: string;
+  node_id: string;
+  permission: number; // 1: Read; 2: Write; 3: Admin;
+  created_timestamp: number;
+}
+
+export interface Node extends DbNode {
+  partial?: boolean;
+  shared: boolean;
+  permissions: Permission[];
+}
