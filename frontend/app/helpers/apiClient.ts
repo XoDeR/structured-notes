@@ -21,7 +21,7 @@ function customFetch(route: string, method: string, body: object) {
 
 let refreshPromise: Promise<void> | null = null;
 
-async function refreshAccessToken(): Promise<void> {
+export async function refreshAccessToken(): Promise<void> {
   if (!refreshPromise) {
     refreshPromise = (async () => {
       console.log('[AUTH] Refreshing access token...');

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FileDrop from '~/components/FileDrop.vue';
+import { refreshAccessToken } from '~/helpers/apiClient';
 import type { Node } from '~/stores/interfaces';
 
 const dropComponent = ref();
@@ -8,11 +9,12 @@ const selectedFile: Ref<File | undefined> = ref();
 const selectFile = (file?: File) => (selectedFile.value = file);
 
 //// test code
-const isLoading = ref(false);
-const fileLink: Ref<string | undefined> = ref(undefined);
-
 const config = useRuntimeConfig();
 const mediaUrl = `${config.public.baseApi}/media`;
+const isLoading = ref(false);
+//const fileLink: Ref<string | undefined> = ref(undefined);
+// temp
+const fileLink: Ref<string | undefined> = ref(`${mediaUrl}/2891564074434561/3659081319481348.png`);
 
 const mediaStore = useMediaStore();
 
@@ -47,12 +49,17 @@ const uploadTestFile = async () => {
   }
 }
 
+const refreshSession = async () => {
+  await refreshAccessToken();
+}
+
 ////
 </script>
 
 <template>
   Media
   <FileDrop ref="dropComponent" @select="selectFile" />
+  <button @click="refreshSession">Refresh session</button>
   <button @click="uploadTestFile">Upload test file</button>
   <p>Expected</p>
   <img src="https://raw.githubusercontent.com/gin-gonic/logo/master/color.png" alt="test"
