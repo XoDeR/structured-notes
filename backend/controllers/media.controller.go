@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"structured-notes/app"
@@ -164,6 +165,24 @@ func (ctr *Controller) GetMediaFile(c *gin.Context) {
 	nodeIdAndExtStr := nodeIdStr + ext
 
 	fullMediaFilePath := filepath.Join("media", userIdStr, nodeIdAndExtStr)
+	// It is assumed that media folder is relative to working
+	// directory that is currentlyalso project directory
+	// Could be checked with the following snippet:
+	////
+	// wd, _ := os.Getwd()
+	// logger.Info("Working directory: " + wd)
+	////
+
+	// Check if file exists
+	if _, err := os.Stat(fullMediaFilePath); os.IsNotExist(err) {
+		logger.Warn("File not found: " + fullMediaFilePath)
+		c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
+		return
+	} else if err != nil {
+		logger.Error(fmt.Sprintf("Error checking file: %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error"})
+		return
+	}
 
 	c.Header("Cross-Origin-Resource-Policy", "cross-origin")
 
