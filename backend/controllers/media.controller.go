@@ -2,9 +2,13 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"path/filepath"
+	"strconv"
 	"structured-notes/app"
+	"structured-notes/logger"
 	"structured-notes/permissions"
 	"structured-notes/utils"
 
@@ -16,6 +20,7 @@ type MediaController interface {
 	UploadFile(c *gin.Context) (int, any)
 	UploadAvatar(c *gin.Context) (int, any)
 	DeleteUpload(c *gin.Context) (int, any)
+	GetMediaFile(c *gin.Context)
 }
 
 func NewMediaController(app *app.App) MediaController {
@@ -122,4 +127,47 @@ func (ctr *Controller) DeleteUpload(c *gin.Context) (int, any) {
 		return http.StatusUnauthorized, err
 	}
 	return http.StatusOK, "Media deleted successfully"
+}
+
+func (ctr *Controller) GetMediaFile(c *gin.Context) {
+	logger.Info("mediaUploads path hit")
+
+	connectedUserId, connectedUserRole, err := utils.GetUserContext(c)
+	if err != nil {
+		logger.Info("GetMediaFile: connectedUserId: " + strconv.FormatUint(uint64(connectedUserId), 10))
+		logger.Info("GetMediaFile: connectedUserRole: " + strconv.FormatInt(int64(connectedUserRole), 10))
+		return
+	}
+
+	userTargetId, err := utils.GetTargetId(c, c.Param("userId"))
+	if err != nil {
+		logger.Info("GetMediaFile: userTargetId: " + strconv.FormatUint(uint64(userTargetId), 10))
+		return
+	}
+
+	nodeTargetId, ext, err := utils.GetMediaFilenameParts(c, c.Param("nameAndExt"))
+	if err != nil {
+		logger.Info("GetMediaFile: nodeTargetId: " + strconv.FormatUint(uint64(nodeTargetId), 10))
+		logger.Info("GetMediaFile: ext: " + ext)
+		return
+	}
+
+	// checks if the user has permissions for the media
+	err = ctr.app.Services.Media.GetMediaFile(nodeTargetId, userTargetId, connectedUserId, connectedUserRole, ctr.authorizer)
+	if err != nil {
+		logger.Info("GetMediaFile")
+		return
+	}
+
+	userIdStr := fmt.Sprintf("%d", userTargetId)
+	nodeIdStr := fmt.Sprintf("%d", nodeTargetId)
+	nodeIdAndExtStr := nodeIdStr + ext
+
+	fullMediaFilePath := filepath.Join("media", userIdStr, nodeIdAndExtStr)
+
+	c.Header("Cross-Origin-Resource-Policy", "cross-origin")
+
+	c.File(fullMediaFilePath)
+
+	logger.Info("File attached")
 }

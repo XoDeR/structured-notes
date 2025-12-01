@@ -2,7 +2,9 @@ package utils
 
 import (
 	"errors"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"structured-notes/permissions"
 	"structured-notes/types"
 
@@ -19,6 +21,21 @@ func GetTargetId(ctx *gin.Context, param string) (types.Snowflake, error) {
 		return 0, errors.New("invalid parameter")
 	}
 	return types.Snowflake(id_param), nil
+}
+
+func GetMediaFilenameParts(ctx *gin.Context, param string) (types.Snowflake, string, error) {
+	if param == "" {
+		return 0, "", errors.New("parameter is empty")
+	}
+
+	ext := filepath.Ext(param)
+	name := strings.TrimSuffix(param, ext)
+
+	id_param, err := strconv.ParseUint(name, 10, 64)
+	if err != nil {
+		return 0, "", errors.New("invalid parameter")
+	}
+	return types.Snowflake(id_param), ext, nil
 }
 
 func GetUserIdCtx(ctx *gin.Context) (types.Snowflake, error) {

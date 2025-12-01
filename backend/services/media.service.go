@@ -20,6 +20,7 @@ type MediaService interface {
 	UploadAvatar(filename string, fileSize int64, fileContent []byte, mimeType string, userId types.Snowflake, maxSize float64, supportedTypes []string) error
 	DeleteUpload(nodeId types.Snowflake, connectedUserId types.Snowflake, connectedUserRole permissions.UserRole, authorizer permissions.Authorizer) error
 	DeleteAllFromUser(userId types.Snowflake) error
+	GetMediaFile(nodeId types.Snowflake, userId types.Snowflake, connectedUserId types.Snowflake, connectedUserRole permissions.UserRole, authorizer permissions.Authorizer) error
 }
 
 type mediaService struct {
@@ -164,6 +165,22 @@ func (s *mediaService) DeleteAllFromUser(userId types.Snowflake) error {
 	// NOT IMPLEMENTED
 	logger.Info("NOT IMPLEMENTED")
 	logger.Info("filename prefix" + prefix)
+
+	return nil
+}
+
+func (s *mediaService) GetMediaFile(nodeId types.Snowflake, userId types.Snowflake, connectedUserId types.Snowflake, connectedUserRole permissions.UserRole, authorizer permissions.Authorizer) error {
+	node, err := s.nodeRepo.GetByID(nodeId)
+	if err != nil {
+		return err
+	}
+	if node == nil {
+		return errors.New("node not found")
+	}
+
+	if allowed, err := authorizer.CanAccessUser(connectedUserId, node.UserId, connectedUserRole); !allowed || err != nil {
+		return errors.New("unauthorized")
+	}
 
 	return nil
 }

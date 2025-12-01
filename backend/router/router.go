@@ -19,14 +19,15 @@ func InitRouter(app *app.App) *gin.Engine {
 		AllowOrigins:     []string{os.Getenv("DOMAIN_CLIENT")},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		ExposeHeaders:    []string{"Content-Length"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Accept"},
 		AllowCredentials: true,
 	}))
 
 	mainGroup := router.Group("/api")
+	mediaGroup := router.Group("/media")
 	routes.Users(app, mainGroup)
 	routes.Auth(app, mainGroup)
-	routes.Uploads(app, mainGroup)
+	routes.Uploads(app, mainGroup, mediaGroup)
 	routes.Nodes(app, mainGroup)
 	routes.Permissions(app, mainGroup)
 	return router
