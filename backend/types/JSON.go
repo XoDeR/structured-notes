@@ -28,3 +28,15 @@ func (j JSONB) Value() (driver.Value, error) {
 	}
 	return json.Marshal(j)
 }
+
+func (j *JSONB) GetString(key string) (string, bool) {
+	if j == nil {
+		return "", false
+	}
+	val, ok := (*j)[key]
+	if !ok {
+		return "", false
+	}
+	s, ok := val.(string)
+	return s, ok
+}
