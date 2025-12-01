@@ -10,6 +10,7 @@ func IfNotNilPointer[T any](newValue, defaultValue *T) *T {
 	}
 	return defaultValue
 }
+
 func IfNotNilValue[T any](newValue *T, defaultValue T) T {
 	if newValue != nil {
 		return *newValue
