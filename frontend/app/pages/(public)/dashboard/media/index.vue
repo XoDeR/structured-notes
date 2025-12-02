@@ -69,4 +69,5 @@ const refreshSession = async () => {
     style="width: 50px; height: 50px; background-color: grey">
   <p v-if="fileLink">Actual</p>
   <img v-if="fileLink" :src="`${fileLink}`" alt="test" style="width: 50px; height: 50px;">
+  <button :disabled="!selectedFile" @click="submitFile">Upload on server</button>
 </template>

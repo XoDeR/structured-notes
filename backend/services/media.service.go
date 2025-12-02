@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"slices"
 	"structured-notes/logger"
@@ -82,6 +83,17 @@ func (s *mediaService) UploadFile(filename string, fileSize int64, fileContent [
 
 	id := s.snowflake.Generate()
 	ext := filepath.Ext(filename)
+
+	mediaFileName := filepath.Join(fmt.Sprintf("%d", userId), fmt.Sprintf("%d%s", id, ext))
+
+	err = saveMediaFile(fileContent, mediaFileName)
+	if err != nil {
+		logger.Info("File " + mediaFileName + " not saved")
+		logger.Error(fmt.Sprintf("Error saving file: %v", err))
+		return nil, err
+	}
+	logger.Info("File " + mediaFileName + " saved")
+
 	transformedPath := fmt.Sprintf("%d%s", id, ext)
 	metadata := types.JSONB{
 		"filetype":         mimeType,
@@ -110,16 +122,28 @@ func (s *mediaService) UploadFile(filename string, fileSize int64, fileContent [
 	}
 
 	if err := s.nodeRepo.Create(node); err != nil {
+		// TODO
+		// Here the saved file should also be removed
 		return nil, err
 	}
 
-	objectName := fmt.Sprintf("%d/%d%s", userId, id, ext)
-
-	// NOT IMPLEMENTED
-	logger.Info("NOT IMPLEMENTED")
-	logger.Info("filename" + objectName)
-
 	return node, nil
+}
+
+func saveMediaFile(fileContent []byte, filename string) error {
+	// Build full path: /media/[id1]/[id2].ext
+	fullPath := filepath.Join("media", filename)
+
+	// Ensure parent directories exist
+	if err := os.MkdirAll(filepath.Dir(fullPath), os.ModePerm); err != nil {
+		return fmt.Errorf("failed to create directories: %w", err)
+	}
+
+	if err := os.WriteFile(fullPath, fileContent, 0644); err != nil {
+		return fmt.Errorf("failed to write file: %w", err)
+	}
+
+	return nil
 }
 
 func (s *mediaService) UploadAvatar(filename string, fileSize int64, fileContent []byte, mimeType string, userId types.Snowflake, maxSize float64, supportedTypes []string) error {
