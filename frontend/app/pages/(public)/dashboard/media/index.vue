@@ -3,6 +3,11 @@ import FileDrop from '~/components/FileDrop.vue';
 import { refreshAccessToken } from '~/helpers/apiClient';
 import type { Node } from '~/stores/interfaces';
 
+const nodeStore = useNodeStore();
+
+const nodes = computed(() => nodeStore.media.toArray());
+const filteredMediaFiles = ref(nodes.value);
+
 const dropComponent = ref();
 const selectedFile: Ref<File | undefined> = ref();
 
@@ -70,4 +75,10 @@ const refreshSession = async () => {
   <p v-if="fileLink">Actual</p>
   <img v-if="fileLink" :src="`${fileLink}`" alt="test" style="width: 50px; height: 50px;">
   <button :disabled="!selectedFile" @click="submitFile">Upload on server</button>
+  <h3>All media files</h3>
+  <div v-for="file in filteredMediaFiles">
+    {{ file.id }}
+    {{ file.name }}
+    {{ file.metadata?.transformed_path }}
+  </div>
 </template>

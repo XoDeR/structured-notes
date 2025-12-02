@@ -16,6 +16,11 @@ func GetTargetId(ctx *gin.Context, param string) (types.Snowflake, error) {
 		return 0, errors.New("parameter is empty")
 	}
 
+	// @me in params is a convention -- not to require auth user to include userId
+	if param == "@me" {
+		return GetUserIdCtx(ctx)
+	}
+
 	id_param, err := strconv.ParseUint(param, 10, 64)
 	if err != nil {
 		return 0, errors.New("invalid parameter")
