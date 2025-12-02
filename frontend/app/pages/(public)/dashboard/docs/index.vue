@@ -92,6 +92,10 @@ const rows: ComputedRef<Field[]> = computed(() =>
 <template>
   <h1>Documents</h1>
 
+  <h3>create new document</h3>
+  <NuxtLink to="/dashboard/docs/new" :prefetch="false">+</NuxtLink>
+  <hr>
+
   <DataTable v-if="view === 'table'" :headers="headers" :rows="rows">
   </DataTable>
 </template>
