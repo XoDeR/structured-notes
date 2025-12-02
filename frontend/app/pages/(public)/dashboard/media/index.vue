@@ -12,9 +12,8 @@ const selectFile = (file?: File) => (selectedFile.value = file);
 const config = useRuntimeConfig();
 const mediaUrl = `${config.public.baseApi}/media`;
 const isLoading = ref(false);
-//const fileLink: Ref<string | undefined> = ref(undefined);
-// temp
-const fileLink: Ref<string | undefined> = ref(`${mediaUrl}/2891564074434561/3659081319481348.png`);
+const fileLink: Ref<string | undefined> = ref(undefined);
+
 
 const mediaStore = useMediaStore();
 
@@ -65,6 +64,9 @@ const refreshSession = async () => {
   <img src="https://raw.githubusercontent.com/gin-gonic/logo/master/color.png" alt="test"
     style="width: 50px; height: 50px;">
   <p v-if="isLoading">Uploading file...</p>
+  <p>Test Serve Existing Upload</p>
+  <img :src="`${mediaUrl}/2891564074434561/3659081319481348.png`" alt="test"
+    style="width: 50px; height: 50px; background-color: grey">
   <p v-if="fileLink">Actual</p>
   <img v-if="fileLink" :src="`${fileLink}`" alt="test" style="width: 50px; height: 50px;">
 </template>
